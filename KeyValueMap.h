@@ -1,0 +1,4 @@
+#ifndef KEYVALUEMAP_H
+#define KEYVALUEMAP_H
+
+#endif // KEYVALUEMAP_H
