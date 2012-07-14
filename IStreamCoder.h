@@ -4,6 +4,7 @@
 #include <istream>
 #include <ostream>
 #include <string>
+#include <vector>
 #include <assert.h>
 
 namespace BambooLib
@@ -11,20 +12,41 @@ namespace BambooLib
   class IStreamCoder
   {
   public:
+    template <class T> void ItlWrite(std::ostream &rOutputStream, std::vector<T> &refVar)
+      {
+        size_t iLength = refVar.size();
+        rOutputStream.write(reinterpret_cast<const char *>(&iLength), sizeof(iLength));
+
+        for (unsigned int i=0; i < iLength; i++)
+            ItlWrite(rOutputStream, refVar[i]);
+      }
+
+      template <class T> void ItlRead(std::istream &rInputStream, std::vector<T> &refVar)
+      {
+          size_t iLength;
+          rInputStream.read(reinterpret_cast<char *>(&iLength), sizeof(iLength));
+
+          refVar.resize(iLength);
+
+          for (unsigned int i=0; i < iLength; i++)
+              ItlRead(rInputStream, refVar[i]);
+      }
+
     void ItlWrite(std::ostream &rOutputStream, std::string &refVar)
     {
-      int iLength = refVar.size();
+      size_t iLength = refVar.size();
       rOutputStream.write(reinterpret_cast<const char *>(&iLength), sizeof(iLength));
       rOutputStream.write(reinterpret_cast<const char *>(refVar.c_str()), iLength);
     }
 
     void ItlRead(std::istream &rInputStream, std::string &refVar)
     {
-      int iLength;
+      size_t iLength;
       rInputStream.read(reinterpret_cast<char *>(&iLength), sizeof(iLength));
 
-      char *szBuffer = new char[iLength];
+      char *szBuffer = new char[iLength+1];
       rInputStream.read(szBuffer, iLength);
+      szBuffer[iLength] = '\0';
 
       refVar = std::string(szBuffer);
 

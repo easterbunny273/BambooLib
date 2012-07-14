@@ -11,10 +11,21 @@ DEFINES += __GXX_EXPERIMENTAL_CXX0X__
 
 
 SOURCES += main.cpp \
-    KeyValueMap.cpp
+    KeyValueMap.cpp \
+    Logger.cpp \
+    BinarySerializer.cpp \
+    CoreSystem.cpp \
+    IIdentifyable.cpp \
+    IIdentifyableTest.cpp
 
 HEADERS += \
     IStreamable.h \
     KeyValueMap.h \
-    IStreamCoder.h
+    IStreamCoder.h \
+    Logger.h \
+    BinarySerializer.h \
+    IIdentifyableTest.h \
+    CoreSystem.h \
+    IIdentifyable.h \
+    ISerializer.h
 
