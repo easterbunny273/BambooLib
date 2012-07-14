@@ -10,13 +10,13 @@ namespace BambooLib
     void TestClass2::ItlWriteToStream(std::ostream &outStream, ISerializer *pSerializer) const
     {
         pSerializer->Serialize(outStream, m_sTestString);
-        pSerializer->Serialize(outStream, (const IIdentifyable *) m_pOtherObject);
+        pSerializer->Serialize(outStream, (const IStreamable *) m_pOtherObject);
     }
 
     void TestClass2::ItlReadFromStream(std::istream &rInStream, ISerializer *pSerializer)
     {
         pSerializer->Unserialize(rInStream, m_sTestString);
-        pSerializer->Unserialize(rInStream, (IIdentifyable **) &m_pOtherObject);
+        pSerializer->Unserialize(rInStream, (IStreamable **) &m_pOtherObject);
     }
 
     void TestClass2::SetOtherObject(IIdentifyable *pObject)

@@ -2,7 +2,6 @@
 #define IIDENTIFYABLE_H
 
 #include "CoreSystem.h"
-#include "ISerializer.h"
 
 namespace BambooLib
 {
@@ -19,14 +18,7 @@ namespace BambooLib
         t_objectID GetObjectID() const { return m_nObjectID; }
         t_classID GetClassID() const { return m_nClassID; }
 
-        void Store(std::ostream &outStream, ISerializer *pSerializer) const;
-        bool Restore(std::istream &inStream, ISerializer *pSerializer);
-
     protected:
-
-        virtual void ItlWriteToStream(std::ostream &outStream, ISerializer *pSerializer) const = 0;
-        virtual void ItlReadFromStream(std::istream &inStream, ISerializer *pSerializer) = 0;
-
         const t_classID   m_nClassID;
         const t_objectID  m_nObjectID;
     };

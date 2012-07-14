@@ -13,7 +13,6 @@ using namespace std;
 
 #include "IStreamable.h"
 #include "Logger.h"
-#include "KeyValueMap.h"
 #include "BinarySerializer.h"
 #include "IIdentifyableTest.h"
 
@@ -24,45 +23,6 @@ int main()
    // std::ofstream Ftest("test.txt");
 
     TestClass1 *pTest = TestClass1::Create();
-
-    PtrIIdentifyable TestPointer(pTest);
-    Ptr2IIdentifyable<TestClass1> TestPointer2(pTest);
-
-    {
-        TestClass1 *pObject1 = TestClass1::Create();
-        TestClass2 *pObject2 = TestClass2::Create("hallo!");
-
-        pObject2->SetOtherObject(pObject1);
-
-        TestPointer = PtrIIdentifyable(pObject2);
-        TestPointer2 = Ptr2IIdentifyable<TestClass1>(pObject1);
-
-        std::ofstream fOutput("ptrtest1");
-        pObject2->Store(fOutput, new BinarySerializer());
-
-        delete pObject2;
-        delete pObject1;
-    }
-
-    TestPointer2->SomethingSpecial();
-
-    {
-        std::ifstream fInput("ptrtest1");
-
-        TestClass2 *pLoadedObject2 = TestClass2::CreateFromStream(fInput, new BinarySerializer());
-
-        TestClass2 *pTestObject = TestClass2::Cast(TestPointer.ptr());
-
-        t_objectID nTest = TestPointer->GetObjectID();
-
-        TestClass1 *pDings = TestPointer2.ptr2();
-
-
-
-
-        int a = 4;
-    }
-
 
 
     /*TestClass1 *pHallo1 = TestClass1::Create();

@@ -1,7 +1,10 @@
 #include <cassert>
 
-#include "Serializer.h"
+#include "IStreamable.h"
+#include "BinarySerializer.h"
+
 #include <iostream>
+
 namespace BambooLib
 {
 
@@ -53,7 +56,7 @@ namespace BambooLib
 
                 assert (m_sAdditionalObjectsToSerialize.find(nObjectToSerialize) != m_sAdditionalObjectsToSerialize.end());
 
-                IIdentifyable *pObject = CoreSystem::GetInstance()->GetObjectForObjectID(nObjectToSerialize);
+                IStreamable *pObject = IStreamable::Cast(CoreSystem::GetInstance()->GetObjectForObjectID(nObjectToSerialize));
                 assert (pObject != nullptr);
 
                 pObject->Store(rOutStream, this);
@@ -111,7 +114,7 @@ namespace BambooLib
 
             for (auto iter = m_vDummyPointersToReplace.begin(); iter != m_vDummyPointersToReplace.end(); iter++)
             {
-                IIdentifyable ** ppObject = *iter;
+                IStreamable ** ppObject = *iter;
 
                 t_objectID nObjectID = reinterpret_cast<t_objectID> (*ppObject);
 
@@ -122,11 +125,13 @@ namespace BambooLib
 
                     t_objectID nNewObjectID = iter->second;
 
-                    *ppObject = CoreSystem::GetInstance()->GetObjectForObjectID(nNewObjectID);
+                    *ppObject = IStreamable::Cast(CoreSystem::GetInstance()->GetObjectForObjectID(nNewObjectID));
+                    assert (*ppObject != nullptr);
                 }
                 else
                 {
-                    *ppObject = CoreSystem::GetInstance()->GetObjectForObjectID(nObjectID);
+                    *ppObject = IStreamable::Cast(CoreSystem::GetInstance()->GetObjectForObjectID(nObjectID));
+                    assert (*ppObject != nullptr);
                 }
 
                 assert (*ppObject != nullptr);
@@ -139,7 +144,7 @@ namespace BambooLib
     }
 
 /***************** objects  * ************************/
-   void BinarySerializer::Serialize(std::ostream &rOutStream, const IIdentifyable * rpObject)
+   void BinarySerializer::Serialize(std::ostream &rOutStream, const IStreamable * rpObject)
     {
        if (rpObject != nullptr)
        {
@@ -167,14 +172,14 @@ namespace BambooLib
 
     }
 
-   void BinarySerializer::Unserialize(std::istream &rInStream, IIdentifyable ** ppObject)
+   void BinarySerializer::Unserialize(std::istream &rInStream, IStreamable ** ppObject)
     {
        if (m_nObjectReadLevels > 0)
        {
            t_objectID nObjectID;
            Unserialize(rInStream, nObjectID);
 
-           *ppObject = reinterpret_cast<IIdentifyable *> (nObjectID);
+           *ppObject = reinterpret_cast<IStreamable *> (nObjectID);
 
            if (nObjectID != INVALID_OBJECTID)
            {

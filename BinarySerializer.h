@@ -25,7 +25,7 @@ namespace BambooLib
         std::list<t_objectID> m_lAdditionalObjectsToRead;
         std::set<t_objectID> m_sAdditionalObjectsToRead;
         std::map<t_objectID, t_objectID> m_mObjectIDReplaceTable;
-        std::vector<IIdentifyable **> m_vDummyPointersToReplace;
+        std::vector<IStreamable **> m_vDummyPointersToReplace;
 
     public:
         BinarySerializer() : m_nObjectWriteLevels(0), m_nObjectReadLevels(0) {}
@@ -37,7 +37,7 @@ namespace BambooLib
         virtual void StartObjectReading();
         virtual void StopObjectReading(std::istream &rInStream, bool bUseObjectID = true);
 
-        virtual void Serialize(std::ostream &rOutStream, const IIdentifyable *rValue);
+        virtual void Serialize(std::ostream &rOutStream, const IStreamable *rValue);
         virtual void Serialize(std::ostream &rOutStream, const unsigned int &rValue);
         virtual void Serialize(std::ostream &rOutStream, const int &rValue);
         virtual void Serialize(std::ostream &rOutStream, const long int &rValue);
@@ -49,7 +49,7 @@ namespace BambooLib
         virtual void Serialize(std::ostream &rOutStream, const bool &rValue);
         virtual void Serialize(std::ostream &rOutStream, const std::string & rsValue);
 
-        virtual void Unserialize(std::istream &rInStream, IIdentifyable ** ppObject);
+        virtual void Unserialize(std::istream &rInStream, IStreamable ** ppObject);
         virtual void Unserialize(std::istream &rInStream, unsigned int &rValue);
         virtual void Unserialize(std::istream &rInStream, int &rValue);
         virtual void Unserialize(std::istream &rInStream, long int &rValue);

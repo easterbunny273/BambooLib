@@ -6,16 +6,16 @@
 #include <typeinfo>
 #include <memory>
 
-#include "IIdentifyable.h"
+#include "IStreamable.h"
 #include "ISerializer.h"
 
 namespace BambooLib
 {
-    class TestClass1 : public IIdentifyable, public _TIIdentifyable_StaticInterfaceTester<TestClass1>, public _TIdentifyable_PreDefinedMethods<TestClass1>
+    class TestClass1 : public IStreamable, public _TIIdentifyable_StaticInterfaceTester<TestClass1>, public _TIdentifyable_PreDefinedMethods<TestClass1>
     {
     private:
-        TestClass1() : IIdentifyable(s_classID) {}
-        TestClass1(t_objectID nObjectID) : IIdentifyable(s_classID, nObjectID) {}
+        TestClass1() : IStreamable(s_classID) {}
+        TestClass1(t_objectID nObjectID) : IStreamable(s_classID, nObjectID) {}
 
         static t_classID s_classID;
 
@@ -38,11 +38,11 @@ namespace BambooLib
         }
     };
 
-    class TestClass2 : public IIdentifyable, public _TIIdentifyable_StaticInterfaceTester<TestClass2>
+    class TestClass2 : public IStreamable, public _TIIdentifyable_StaticInterfaceTester<TestClass2>
     {
     private:
-        TestClass2() : IIdentifyable(s_classID), m_pOtherObject(nullptr) {}
-        TestClass2(t_objectID nObjectID) : IIdentifyable(s_classID, nObjectID), m_pOtherObject(nullptr) {}
+        TestClass2() : IStreamable(s_classID), m_pOtherObject(nullptr) {}
+        TestClass2(t_objectID nObjectID) : IStreamable(s_classID, nObjectID), m_pOtherObject(nullptr) {}
 
         static t_classID s_classID;
         std::string m_sTestString;

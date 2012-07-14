@@ -4,15 +4,11 @@
 #include <ostream>
 #include <istream>
 #include <string>
-#include <list>
-#include <set>
-#include <map>
-#include <vector>
-
-#include "IIdentifyable.h"
 
 namespace BambooLib
 {
+    class IStreamable;
+
     class ISerializer
     {
     public:
@@ -25,7 +21,7 @@ namespace BambooLib
         virtual void StartObjectReading() = 0;
         virtual void StopObjectReading(std::istream &rInStream, bool bUseObjectID = true) = 0;
 
-        virtual void Serialize(std::ostream &rOutStream, const IIdentifyable * rValue) = 0;
+        virtual void Serialize(std::ostream &rOutStream, const IStreamable * rValue) = 0;
         virtual void Serialize(std::ostream &rOutStream, const unsigned int &rValue) = 0;
         virtual void Serialize(std::ostream &rOutStream, const int &rValue) = 0;
         virtual void Serialize(std::ostream &rOutStream, const long int &rValue) = 0;
@@ -39,7 +35,7 @@ namespace BambooLib
 
         void Serialize(std::ostream &rOutStream, const char * rsValue) { Serialize(rOutStream, std::string(rsValue)); }
 
-        virtual void Unserialize(std::istream &rInStream, IIdentifyable ** ppObject) = 0;
+        virtual void Unserialize(std::istream &rInStream, IStreamable ** ppObject) = 0;
         virtual void Unserialize(std::istream &rInStream, unsigned int &rValue) = 0;
         virtual void Unserialize(std::istream &rInStream, int &rValue) = 0;
         virtual void Unserialize(std::istream &rInStream, long int &rValue) = 0;

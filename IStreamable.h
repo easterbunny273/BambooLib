@@ -1,49 +1,66 @@
 #ifndef ISTREAMABLE_H
 #define ISTREAMABLE_H
 
-#include "IStreamCoder.h"
+#include "IIdentifyable.h"
+#include "ISerializer.h"
 
 #include <istream>
 #include <ostream>
 #include <fstream>
 
 #include <memory>
+#include <cassert>
 
 namespace BambooLib
 {
-
-  class IStreamable
+  class IStreamable : public IIdentifyable
   {
-  public:
-    void WriteToStream(std::ostream &rOutputStream) { ItlCode(rOutputStream); }
-    void ReadFromStream(std::istream &rInputStream) { ItlCode(rInputStream); }
+    public:
+      IStreamable(t_classID nClassID, t_objectID nObjectID) : IIdentifyable(nClassID, nObjectID) {}
+      IStreamable(t_classID nClassID) : IIdentifyable(nClassID) {}
 
-    void WriteToFile(std::string sFilename) { std::ofstream file(sFilename); WriteToStream(file); }
-    void RestoreFromFile(std::string sFilename) { std::ifstream file(sFilename); ReadFromStream(file); }
+      virtual ~IStreamable() {}
 
-  private:
-    virtual void ItlCode(std::ios &rStream) = 0;
-  };
+      void Store(std::ostream &outStream, ISerializer *pSerializer) const
+      {
+          pSerializer->StartObjectWriting();
 
-  class StreamableTest : public IStreamable
-  {
-  public:
-    float m_fTest1;
-    double m_dTest2;
-    std::string m_sTest3;
+          pSerializer->Serialize(outStream, GetClassID());
+          pSerializer->Serialize(outStream, GetObjectID());
 
-  private:
-    virtual void ItlCode(std::ios &rStream)
-    {
-      std::unique_ptr<IStreamCoder> spCoder(new IStreamCoder());
+          ItlWriteToStream(outStream, pSerializer);
 
-      spCoder->Code(rStream, m_fTest1);
-      spCoder->Code(rStream, m_dTest2);
-      spCoder->Code(rStream, m_sTest3);
-    }
+          pSerializer->StopObjectWriting(outStream);
+      }
 
+      bool Restore(std::istream &inStream, ISerializer *pSerializer)
+      {
+          pSerializer->StartObjectReading();
 
+          t_classID nClassID;
+          t_objectID nObjectID;
 
+          pSerializer->Unserialize(inStream, nClassID);
+          pSerializer->Unserialize(inStream, nObjectID);
+
+          assert (nClassID == m_nClassID);
+          assert (nObjectID == m_nObjectID);
+
+          bool bOk = (nClassID == m_nClassID && m_nObjectID == nObjectID);
+
+          if (bOk)
+              ItlReadFromStream(inStream, pSerializer);
+
+          pSerializer->StopObjectReading(inStream, true);
+
+          return bOk;
+      }
+
+      static IStreamable * Cast(IIdentifyable *pObject) { return dynamic_cast<IStreamable *>(pObject); }
+  protected:
+
+      virtual void ItlWriteToStream(std::ostream &outStream, ISerializer *pSerializer) const = 0;
+      virtual void ItlReadFromStream(std::istream &inStream, ISerializer *pSerializer) = 0;
   };
 }
 
