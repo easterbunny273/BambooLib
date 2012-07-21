@@ -1,8 +1,8 @@
 #ifndef ISTREAMABLE_H
 #define ISTREAMABLE_H
 
-#include "IIdentifyable.h"
-#include "ISerializer.h"
+#include "BambooLib/include/IIdentifyable.h"
+#include "BambooLib/include/ISerializer.h"
 
 #include <istream>
 #include <ostream>
@@ -13,7 +13,7 @@
 
 namespace BambooLib
 {
-  class IStreamable : public IIdentifyable
+  class IStreamable : virtual public IIdentifyable
   {
     public:
       IStreamable(t_classID nClassID, t_objectID nObjectID) : IIdentifyable(nClassID, nObjectID) {}

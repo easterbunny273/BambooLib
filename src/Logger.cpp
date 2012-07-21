@@ -7,7 +7,7 @@
 #include <cassert>
 #include <ctime>
 
-#include "Logger.h"
+#include "BambooLib/include/Logger.h"
 
 
 namespace BambooLib

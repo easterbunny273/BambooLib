@@ -19,7 +19,7 @@ namespace BambooLib
         pSerializer->Unserialize(rInStream, (IStreamable **) &m_pOtherObject);
     }
 
-    void TestClass2::SetOtherObject(IIdentifyable *pObject)
+    void TestClass2::SetOtherObject(IStreamable *pObject)
     {
         m_pOtherObject = pObject;
     }

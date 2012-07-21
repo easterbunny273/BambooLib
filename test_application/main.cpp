@@ -11,9 +11,10 @@ using namespace std;
 
 #include "assert.h"
 
-#include "IStreamable.h"
-#include "Logger.h"
-#include "BinarySerializer.h"
+#include "BambooLib/include/CoreSystem.h"
+#include "BambooLib/include/IStreamable.h"
+#include "BambooLib/include/Logger.h"
+#include "BambooLib/include/BinarySerializer.h"
 #include "IIdentifyableTest.h"
 
 using namespace BambooLib;
@@ -24,6 +25,9 @@ int main()
 
     TestClass1 *pTest = TestClass1::Create();
 
+    TestClass1 *pTest2 = TestClass1::Cast(CoreSystem::GetInstance()->GetObjectForObjectID(pTest->GetObjectID()));
+
+    assert (pTest2 == pTest);
 
     /*TestClass1 *pHallo1 = TestClass1::Create();
     TestClass2 *pHallo3 = TestClass2::Create("huhu");

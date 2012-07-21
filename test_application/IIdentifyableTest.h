@@ -6,22 +6,24 @@
 #include <typeinfo>
 #include <memory>
 
-#include "IStreamable.h"
-#include "ISerializer.h"
+#include "BambooLib/include/IStreamable.h"
+#include "BambooLib/include/ISerializer.h"
 
 namespace BambooLib
 {
-    class TestClass1 : public IStreamable, public _TIIdentifyable_StaticInterfaceTester<TestClass1>, public _TIdentifyable_PreDefinedMethods<TestClass1>
+    class TestClass1 : public IStreamable, virtual public IIdentifyable
     {
     private:
-        TestClass1() : IStreamable(s_classID) {}
-        TestClass1(t_objectID nObjectID) : IStreamable(s_classID, nObjectID) {}
+        TestClass1() : IIdentifyable(ClassID()), IStreamable(s_classID) {}
+        TestClass1(t_objectID nObjectID) : IIdentifyable(ClassID(), nObjectID), IStreamable(s_classID, nObjectID) {}
 
         static t_classID s_classID;
 
         virtual void ItlWriteToStream(std::ostream &outStream, ISerializer *pSerializer) const;
         virtual void ItlReadFromStream(std::istream &inStream, ISerializer *pSerializer);
     public:
+
+        static TestClass1 * Cast(IIdentifyable *pObject) { return dynamic_cast<TestClass1 *>(pObject); }
 
         static t_classID ClassID() { return s_classID; }
 
@@ -38,21 +40,21 @@ namespace BambooLib
         }
     };
 
-    class TestClass2 : public IStreamable, public _TIIdentifyable_StaticInterfaceTester<TestClass2>
+    class TestClass2 : public IStreamable, virtual public IIdentifyable
     {
     private:
-        TestClass2() : IStreamable(s_classID), m_pOtherObject(nullptr) {}
-        TestClass2(t_objectID nObjectID) : IStreamable(s_classID, nObjectID), m_pOtherObject(nullptr) {}
+        TestClass2() : IStreamable(s_classID), IIdentifyable(ClassID()), m_pOtherObject(nullptr) {}
+        TestClass2(t_objectID nObjectID) : IStreamable(s_classID, nObjectID), IIdentifyable(ClassID(), nObjectID), m_pOtherObject(nullptr) {}
 
         static t_classID s_classID;
         std::string m_sTestString;
-        IIdentifyable *m_pOtherObject;
+        IStreamable *m_pOtherObject;
 
         virtual void ItlWriteToStream(std::ostream &outStream, ISerializer *pSerializer) const;
         virtual void ItlReadFromStream(std::istream &inStream, ISerializer *pSerializer);
     public:
 
-        void SetOtherObject(IIdentifyable *pObject);
+        void SetOtherObject(IStreamable *pObject);
         static t_classID ClassID() { return s_classID; }
         static TestClass2 * Cast(IIdentifyable *pObject) { return dynamic_cast<TestClass2 *>(pObject); }
 

@@ -1,7 +1,7 @@
 #ifndef BINARYSERIALIZER_H
 #define BINARYSERIALIZER_H
 
-#include "ISerializer.h"
+#include "BambooLib/include/ISerializer.h"
 
 #include <ostream>
 #include <istream>
