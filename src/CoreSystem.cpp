@@ -1,5 +1,5 @@
-#include "BambooLib/include/CoreSystem.h"
-#include "BambooLib/include/IIdentifyable.h"
+#include "CoreSystem.h"
+#include "IIdentifyable.h"
 
 #include <cassert>
 #include <cstring>

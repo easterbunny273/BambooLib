@@ -1,7 +1,7 @@
 #ifndef IIDENTIFYABLE_H
 #define IIDENTIFYABLE_H
 
-#include "BambooLib/include/CoreSystem.h"
+#include "CoreSystem.h"
 
 namespace BambooLib
 {

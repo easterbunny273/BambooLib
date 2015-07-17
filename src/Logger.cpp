@@ -7,13 +7,13 @@
 #include <cassert>
 #include <ctime>
 
-#include "BambooLib/include/Logger.h"
+#include "Logger.h"
 
 
 namespace BambooLib
 {
 
-std::vector<Logger::ILogWriter *> Logger::m_vLogWriters;
+std::vector<Logger::ILogWriter *> * Logger::m_pvLogWriters(new std::vector<Logger::ILogWriter*>());
 
 Logger::TItlLogTarget             Logger::m_rBufferTarget_Debug(Logger::DEBUG);
 Logger::TItlLogTarget             Logger::m_rBufferTarget_Info(Logger::INFO);
@@ -24,11 +24,11 @@ Logger::TItlLogTarget             Logger::m_rBufferTarget_Fatal(Logger::FATAL);
 bool Logger::RegisterLogWriter(Logger::ILogWriter *pWriter)
 {
     // assertion that the new pWriter is not in the list already
-    //std::for_each(m_vLogWriters.begin(), m_vLogWriters.end(), [](Logger::ILogWriter *pVectorEntry){ assert(pVectorEntry != pWriter); });
-    for (auto iter=m_vLogWriters.begin(); iter != m_vLogWriters.end(); iter++)
+    //std::for_each(m_pvLogWriters->begin(), m_pvLogWriters->end(), [](Logger::ILogWriter *pVectorEntry){ assert(pVectorEntry != pWriter); });
+    for (auto iter=m_pvLogWriters->begin(); iter != m_pvLogWriters->end(); iter++)
         assert(*iter != pWriter);
 
-    m_vLogWriters.push_back(pWriter);
+    m_pvLogWriters->push_back(pWriter);
 
     return true;
 }
@@ -37,14 +37,14 @@ bool Logger::UnregisterAndDeleteLogWriter(Logger::ILogWriter *pWriter)
 {
     bool bFound = false;
 
-    for (auto iter=m_vLogWriters.begin(); iter != m_vLogWriters.end(); iter++)
+    for (auto iter=m_pvLogWriters->begin(); iter != m_pvLogWriters->end(); iter++)
     {
         if (*iter == pWriter)
         {
             bFound = true;
 
             // remove pWriter from vector
-            m_vLogWriters.erase(iter);
+            m_pvLogWriters->erase(iter);
 
             // delete log writer
             delete *iter;
@@ -67,29 +67,34 @@ const char *Logger::GetLevelString(Logger::TLogLevel eLevel)
     case FATAL: return "FATAL";
     default: assert(!"should not come here");
     }
+
+	return "--INTERNAL LOGGER ERROR--";
 }
 
 Logger::Logger()
 {
-    // nothing to do
+	m_pvLogWriters = new std::vector<ILogWriter*>();
 }
 
 Logger::~Logger()
 {
-    for (auto iter=m_vLogWriters.begin(); iter != m_vLogWriters.end(); iter++)
+	for (auto iter = m_pvLogWriters->begin(); iter != m_pvLogWriters->end(); iter++)
     {
         // delete log writer
         delete *iter;
     }
 
-    m_vLogWriters.clear();
+    m_pvLogWriters->clear();
+
+	delete m_pvLogWriters;
+	m_pvLogWriters = nullptr;
 }
 
 void Logger::LogMessage(Logger::TLogLevel eLevel, const char *szMessage)
 {
-    long int iTimestamp = time(NULL);
+    time_t iTimestamp = time(NULL);
 
-    for (auto iter=m_vLogWriters.begin(); iter != m_vLogWriters.end(); iter++)
+    for (auto iter=m_pvLogWriters->begin(); iter != m_pvLogWriters->end(); iter++)
     {
         (*iter)->Write(eLevel, iTimestamp, szMessage);
     }
@@ -103,15 +108,16 @@ Logger::ConsoleLogWriter * Logger::ConsoleLogWriter::Create()
 }
 
 void Logger::ConsoleLogWriter::Write(Logger::TLogLevel eLevel,
-                                     long lUnixTimestamp,
+									time_t lUnixTimestamp,
                                      const char *szMessage)
 {
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-        struct tm * pTimeinfo = localtime ( &lUnixTimestamp );
+		tm stTimeInfo;
+		localtime_s(&stTimeInfo, &lUnixTimestamp);
 
-        char szBuffer[80];
-        strftime (szBuffer,80,"%H:%M:%S", pTimeinfo);
+		char szBuffer[80];
+		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
 
         if (eLevel >= Logger::ERROR)
             std::cerr << "(" << szBuffer << ", " << Logger::GetLevelString(eLevel) << ") " << szMessage << std::endl << std::flush;
@@ -124,23 +130,24 @@ Logger::FileLogWriter * Logger::FileLogWriter::Create(const std::string &sFilena
 {
     Logger::FileLogWriter *pNewLogWriter = new FileLogWriter();
 
-    pNewLogWriter->m_sFilename = sFilename;
+    pNewLogWriter->m_psFilename = new std::string(sFilename);
     pNewLogWriter->m_pFile = new std::ofstream(sFilename);
 
     return pNewLogWriter;
 }
 
-void Logger::FileLogWriter::Write(Logger::TLogLevel eLevel, long lUnixTimestamp, const char *szMessage)
+void Logger::FileLogWriter::Write(Logger::TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage)
 {
     assert (m_pFile != NULL);
     assert (m_pFile->is_open());
 
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-        struct tm * pTimeinfo = localtime ( &lUnixTimestamp );
+		tm stTimeInfo;
+		localtime_s(&stTimeInfo, &lUnixTimestamp);
 
-        char szBuffer[80];
-        strftime (szBuffer,80,"%H:%M:%S", pTimeinfo);
+		char szBuffer[80];
+		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
 
         (*m_pFile) << "(" << szBuffer << ", " << Logger::GetLevelString(eLevel) << ") " << szMessage << std::endl;
     }
@@ -149,6 +156,7 @@ void Logger::FileLogWriter::Write(Logger::TLogLevel eLevel, long lUnixTimestamp,
 Logger::FileLogWriter::FileLogWriter()
 {
     m_pFile = NULL;
+	m_psFilename = nullptr;
 }
 
 Logger::FileLogWriter::~FileLogWriter()
@@ -160,13 +168,16 @@ Logger::FileLogWriter::~FileLogWriter()
 
     delete m_pFile;
     m_pFile = NULL;
+
+	delete m_psFilename;
+	m_psFilename = nullptr;
 }
 
 Logger::HTMLLogWriter *Logger::HTMLLogWriter::Create(const std::string &sFilename)
 {
     Logger::HTMLLogWriter *pNewLogWriter = new HTMLLogWriter();
 
-    pNewLogWriter->m_sFilename = sFilename;
+	pNewLogWriter->m_psFilename = new std::string(sFilename);
     pNewLogWriter->m_pFile = new std::ofstream(sFilename);
 
     // make sure that file could be opened
@@ -193,17 +204,18 @@ Logger::HTMLLogWriter *Logger::HTMLLogWriter::Create(const std::string &sFilenam
     return pNewLogWriter;
 }
 
-void Logger::HTMLLogWriter::Write(Logger::TLogLevel eLevel, long lUnixTimestamp, const char *szMessage)
+void Logger::HTMLLogWriter::Write(Logger::TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage)
 {
     assert (m_pFile != NULL);
     assert (m_pFile->is_open());
 
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-        struct tm * pTimeinfo = localtime ( &lUnixTimestamp );
+		tm stTimeInfo;
+		localtime_s(&stTimeInfo, &lUnixTimestamp);
 
         char szBuffer[80];
-        strftime (szBuffer,80,"%H:%M:%S", pTimeinfo);
+		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
 
         const char *szLevel = Logger::GetLevelString(eLevel);
 
@@ -224,24 +236,28 @@ Logger::HTMLLogWriter::~HTMLLogWriter()
 
     delete m_pFile;
     m_pFile = NULL;
+
+	delete m_psFilename;
+	m_psFilename = nullptr;
 }
 
 Logger::HTMLLogWriter::HTMLLogWriter()
 {
     m_pFile = NULL;
+	m_psFilename = nullptr;
 }
 
 Logger::TItlLogTarget &Logger::TItlLogTarget::operator <<(Logger::TItlNestedEndl p)
 {
     // create string of stringstream
-    std::string sMessage = sBuffer.str();
+    std::string sMessage = m_pBuffer->str();
 
     // log message
     Logger::LogMessage(m_eLevel, sMessage);
 
     // clear stringstream
-    sBuffer.str(std::string());
-    sBuffer.clear();
+	m_pBuffer->str(std::string());
+	m_pBuffer->clear();
 
     return *this;
 }

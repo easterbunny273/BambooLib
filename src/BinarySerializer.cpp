@@ -1,7 +1,7 @@
 #include <cassert>
 
-#include "BambooLib/include/IStreamable.h"
-#include "BambooLib/include/BinarySerializer.h"
+#include "IStreamable.h"
+#include "BinarySerializer.h"
 
 #include <iostream>
 

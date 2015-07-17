@@ -1,8 +1,8 @@
 #ifndef ISTREAMABLE_H
 #define ISTREAMABLE_H
 
-#include "BambooLib/include/IIdentifyable.h"
-#include "BambooLib/include/ISerializer.h"
+#include "IIdentifyable.h"
+#include "ISerializer.h"
 
 #include <istream>
 #include <ostream>

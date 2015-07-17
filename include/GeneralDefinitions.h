@@ -3,6 +3,16 @@
 
 #define BAMBOOLIB_VERSION "0.1"
 
+#ifdef WIN32
+	#ifdef BAMBOOLIB_EXPORTS
+	#define BAMBOOLIB_DLL _declspec(dllexport)
+	#else
+	#define BAMBOOLIB_DLL _declspec(dllimport)
+	#endif
+#else
+	#define BAMBOOLIB_DLL 
+#endif
+
 namespace BambooLib
 {
     /*! \name Some general forward declarations */

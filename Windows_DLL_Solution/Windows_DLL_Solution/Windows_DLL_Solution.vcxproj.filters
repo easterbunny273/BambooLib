@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Logger">
+      <UniqueIdentifier>{6d66952f-ae6c-43f2-bbe6-77546ef976ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Streaming">
+      <UniqueIdentifier>{cd08fae7-580c-40d9-a6e4-f437723fed81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{7a3c16d3-fbd7-425d-aad0-82696a9cca66}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\include\Logger.h">
+      <Filter>Logger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\ISerializer.h">
+      <Filter>Streaming</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IStreamable.h">
+      <Filter>Streaming</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\BinarySerializer.h">
+      <Filter>Streaming</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\CoreSystem.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\GeneralDefinitions.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IIdentifyable.h">
+      <Filter>Streaming</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\IPythonAccessable.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\Logger.cpp">
+      <Filter>Logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\BinarySerializer.cpp">
+      <Filter>Streaming</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CoreSystem.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

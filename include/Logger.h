@@ -7,14 +7,17 @@
 #ifndef BAMBOOLIB_LOGGER_H
 #define BAMBOOLIB_LOGGER_H
 
+#include "GeneralDefinitions.h"
+
 #include <string>
 #include <sstream>
 #include <fstream>
 #include <vector>
+#include <memory>
 
 namespace BambooLib
 {
-class Logger
+class BAMBOOLIB_DLL Logger
 {
 public:
     /*! \name Public types */
@@ -39,7 +42,7 @@ public:
     };
 
     /// the interface for logwriter classes
-    class ILogWriter
+	class BAMBOOLIB_DLL ILogWriter
     {
         friend class Logger;
     public:
@@ -47,7 +50,7 @@ public:
         void SetIgnoreBelow(TLogLevel eIgnoreBelow) { m_eIgnoreBelowLogLevel = eIgnoreBelow; }
 
         /// is called by the logger class, the concrete ILogWriter class has to handle the message
-        virtual void Write(TLogLevel eLevel, long int lUnixTimestamp, const char *szMessage) = 0;
+		virtual void Write(TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage) = 0;
 
         /// destructor
         virtual ~ILogWriter() {}
@@ -58,52 +61,53 @@ public:
     };
 
     /// a concrete implementation of ILogWriter, which outputs each log message on cout or cerr (depending on level)
-    class ConsoleLogWriter : public ILogWriter
+	class BAMBOOLIB_DLL ConsoleLogWriter : public ILogWriter
     {
     public:
         static ConsoleLogWriter * Create();
-        virtual void Write(TLogLevel eLevel, long int lUnixTimestamp, const char *szMessage);
+		virtual void Write(TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage);
     };
 
     /// a concrete implementation of ILogWriter, which writes each message in the given file
-    class FileLogWriter : public ILogWriter
+	class BAMBOOLIB_DLL FileLogWriter : public ILogWriter
     {
     public:
         static FileLogWriter * Create(const std::string &sFilename);
-        virtual void Write(TLogLevel eLevel, long int lUnixTimestamp, const char *szMessage);
+		virtual void Write(TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage);
 
         virtual ~FileLogWriter();
 
     private:
         FileLogWriter();
 
-        std::string m_sFilename;
+        std::string * m_psFilename;
         std::ofstream * m_pFile;
     };
 
     /// a concrete implementation of ILogWriter, which writes each message in the given html-file
-    class HTMLLogWriter : public ILogWriter
+	class BAMBOOLIB_DLL HTMLLogWriter : public ILogWriter
     {
     public:
         static HTMLLogWriter * Create(const std::string &sFilename);
-        virtual void Write(TLogLevel eLevel, long int lUnixTimestamp, const char *szMessage);
+		virtual void Write(TLogLevel eLevel, time_t lUnixTimestamp, const char *szMessage);
 
         virtual ~HTMLLogWriter();
     private:
         HTMLLogWriter();
-        std::string m_sFilename;
+		std::string * m_psFilename;
         std::ofstream * m_pFile;
     };
 
     /// the nested class for the log targets
-    class TItlLogTarget
+	class BAMBOOLIB_DLL TItlLogTarget
     {
     private:
         TLogLevel m_eLevel;
-        std::stringstream sBuffer;
+        std::stringstream *m_pBuffer;
 
     public:
-        TItlLogTarget(TLogLevel eLevel) : m_eLevel(eLevel) {}
+        TItlLogTarget(TLogLevel eLevel) : m_eLevel(eLevel), m_pBuffer(new std::stringstream()) {}
+		~TItlLogTarget() { delete m_pBuffer; m_pBuffer = nullptr; }
 
         /// the operator << which accepts only Logger::endl
         TItlLogTarget& operator<<(TItlNestedEndl p);
@@ -112,7 +116,7 @@ public:
         /// the compiler will generate an own method for each type which is used as a parameter
         template <typename T> TItlLogTarget& operator<<(T a)
         {
-            sBuffer << a;
+			*m_pBuffer << a;
             return *this;
         }
     };
@@ -166,7 +170,7 @@ private:
     static TItlLogTarget             m_rBufferTarget_Error;
     static TItlLogTarget             m_rBufferTarget_Fatal;
 
-    static std::vector<ILogWriter *> m_vLogWriters;
+    static std::vector<ILogWriter *> * m_pvLogWriters;
     //@}
 };
 }

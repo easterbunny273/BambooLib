@@ -1,11 +1,12 @@
 #ifndef CORESYSTEM_H
 #define CORESYSTEM_H
 
-#include "BambooLib/include/GeneralDefinitions.h"
+#include "GeneralDefinitions.h"
+#include <memory>
 
 namespace BambooLib
 {
-    class CoreSystem
+	class BAMBOOLIB_DLL CoreSystem
     {
     public:
         /*! \name Static methods */
