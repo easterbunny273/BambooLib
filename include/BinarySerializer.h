@@ -22,7 +22,7 @@ namespace BambooLib
         std::list<t_objectID> m_lAdditionalObjectsToSerialize;
         std::set<t_objectID> m_sAdditionalObjectsToSerialize;
 
-        std::list<t_objectID> m_lAdditionalObjectsToRead;
+        std::list<t_objectID> m_lAdditionalObjectsToRead; 
         std::set<t_objectID> m_sAdditionalObjectsToRead;
         std::map<t_objectID, t_objectID> m_mObjectIDReplaceTable;
         std::vector<IStreamable **> m_vDummyPointersToReplace;

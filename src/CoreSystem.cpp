@@ -8,9 +8,9 @@
 // internal structure for PIMPL
 struct BambooLib::CoreSystem::TItlInternalStuff
 {
-    std::map<t_objectID, IIdentifyable *>                   m_mRegisteredObjects;
-    std::map<t_classID, const char *>                       m_mRegisteredClasses;
-    std::map<t_classID, void *>     m_mRegisteredCreateMethods;
+    std::map<t_objectID, IIdentifyable *>               m_mRegisteredObjects;
+    std::map<t_classID, const char *>                   m_mRegisteredClasses;
+    std::map<t_classID, void *>							m_mRegisteredCreateMethods;
 
     t_objectID m_nNextFreeObjectCode;
 };

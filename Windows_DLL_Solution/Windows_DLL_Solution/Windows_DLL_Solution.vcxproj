@@ -161,7 +161,9 @@
     <ClInclude Include="..\..\include\IPythonAccessable.h" />
     <ClInclude Include="..\..\include\ISerializer.h" />
     <ClInclude Include="..\..\include\IStreamable.h" />
+    <ClInclude Include="..\..\include\lexical_cast.h" />
     <ClInclude Include="..\..\include\Logger.h" />
+    <ClInclude Include="..\..\include\optional.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\BinarySerializer.cpp" />

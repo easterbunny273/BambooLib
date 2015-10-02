@@ -88,25 +88,44 @@ public:
 	enum class ParamType
 	{
 		Void,
-		VoidPtr,
 		Boolean,
 		Integer,
 		Double,
 		Float,
 		StdString,
-		CString
+		Character
 	};
 
+	/*enum ParamModifier
+	{
+		None = 0,
 
-	using ArgumentVector = std::vector<ParamType>;
+		Pointer = 1,
+		Reference = 2,
+		Const = 4
+	};*/
+
+
+
+	struct Argument
+	{
+		ParamType type;
+		//ParamModifier mod;
+
+		bool	  isPtr, isRef, isConst;
+	};
+
+	using ArgumentVector = std::vector<Argument>;
 
 	template <std::size_t N>
 	struct MethodData
 	{
-		MethodData(ParamType _returnValue, ArgumentVector &v) : returnValue(_returnValue) { std::copy(v.begin(), v.end(), arguments.begin()); }
+	public:
+		MethodData(Argument & _returnValue, ArgumentVector &v) : returnValue(_returnValue) { std::copy(v.begin(), v.end(), arguments.begin()); }
+		MethodData(const MethodData &other) : returnValue(other.returnValue), arguments(other.arguments) {}
 
-		const ParamType returnValue;
-		std::array<ParamType, N> arguments;
+		const Argument returnValue;
+		std::array<Argument, N> arguments;
 	};
 
 	template <class T> static auto createMetaData()
@@ -119,7 +138,7 @@ public:
 		// The recursive walker places arguments in reverse order
 		std::reverse(arguments.begin(), arguments.end());
 
-		MethodData<Traits::arity> methodData(GetParamType(Traits::return_type()), arguments);
+		MethodData<Traits::arity> methodData(CreateArgument<Traits::return_type>(), arguments);
 
 		return methodData;
 	}
@@ -134,7 +153,7 @@ public:
 		// The recursive walker places arguments in reverse order
 		std::reverse(arguments.begin(), arguments.end());
 
-		MethodData<Traits::arity - 1> methodData(GetParamType(Traits::return_type()), arguments);
+		MethodData<Traits::arity - 1> methodData(CreateArgument<Traits::return_type>(), arguments);
 
 		return methodData;
 	}
@@ -145,11 +164,33 @@ private:
 	static ParamType GetParamType(int) { return ParamType::Integer; }
 	static ParamType GetParamType(float) { return ParamType::Float; }
 	static ParamType GetParamType(bool) { return ParamType::Boolean; }
-	static ParamType GetParamType(char *) { return ParamType::CString; }
-	static ParamType GetParamType(void *) { return ParamType::VoidPtr; }
+	static ParamType GetParamType(char) { return ParamType::Character; }
+	static ParamType GetParamType(void) { return ParamType::Void; }
 
+	template <class T> static Argument CreateArgument()
+	{
+		using T_withoutConst = std::remove_const<T>::type;
+		using T_withoutPtr = std::remove_pointer<T_withoutConst>::type;
+		using T_withoutRefPtr = std::remove_reference<T_withoutPtr>::type;
 
-	template <class T> static void AddArgument(ArgumentVector &argumentList) { argumentList.push_back(GetParamType(T())); }
+		Argument temp;
+		temp.type = GetParamType(T_withoutRefPtr());
+		temp.isPtr = std::is_pointer<T>::value;
+		temp.isRef = std::is_reference<T>::value;
+		temp.isConst = std::is_const<T>::value;
+
+		/*temp.mod = ParamModifier::None;
+		temp.mod = ParamModifier(temp.mod || (std::is_pointer<T>::value ? ParamModifier::Pointer : ParamModifier::None));
+		temp.mod = ParamModifier(temp.mod || (std::is_reference<T>::value ? ParamModifier::Reference : ParamModifier::None));
+		temp.mod = ParamModifier(temp.mod || (std::is_const<T>::value ? ParamModifier::Const : ParamModifier::None));*/
+
+		return temp;
+	}
+
+	template <class T> static void AddArgument(ArgumentVector &argumentList) 
+	{ 
+		argumentList.push_back(CreateArgument<T>());
+	}
 
 	template<std::size_t> struct int2type {};
 

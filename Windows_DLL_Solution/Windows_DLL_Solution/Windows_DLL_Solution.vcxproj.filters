@@ -16,6 +16,9 @@
     <Filter Include="Experimental\Streaming">
       <UniqueIdentifier>{cd08fae7-580c-40d9-a6e4-f437723fed81}</UniqueIdentifier>
     </Filter>
+    <Filter Include="TestApplication">
+      <UniqueIdentifier>{b9503e9c-56b7-41b5-b0da-b838349f4a8e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\include\Logger.h">
@@ -42,6 +45,12 @@
     <ClInclude Include="..\..\include\IPythonAccessable.h" />
     <ClInclude Include="..\..\include\FunctionTraits.h">
       <Filter>Experimental\FunctionTraits</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\lexical_cast.h">
+      <Filter>Experimental</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\optional.h">
+      <Filter>Experimental</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
