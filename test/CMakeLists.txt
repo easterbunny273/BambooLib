@@ -80,13 +80,13 @@ if(MSVC)
   set(Suffix ".lib")
 else()
   set(Suffix ".a")
-  #set(Pthread "-pthread")
+  set(Pthread "-pthread")
 endif()
 target_link_libraries(
     tests
     debug ${binary_dir}/DebugLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${Suffix}
     optimized ${binary_dir}/ReleaseLibs/${CMAKE_FIND_LIBRARY_PREFIXES}gtest${Suffix}
-   # ${Pthread}
+    ${Pthread}
    )
 
 add_custom_command(TARGET tests POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:tests> ${CMAKE_SOURCE_DIR}/build/test)
