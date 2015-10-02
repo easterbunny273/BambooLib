@@ -7,10 +7,6 @@ file (GLOB HEADER_FILES "${INCLUDE_DIR}/*.h")
 
 aux_source_directory(src SOURCE_FILES)
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -W4")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -W4")
-
- 
 add_definitions(-DBAMBOOLIB_EXPORTS)
 source_group("Include Files" FILES ${HEADER_FILES})
 add_library (BambooLib SHARED ${SOURCE_FILES} ${HEADER_FILES})
@@ -28,6 +24,10 @@ if(CMAKE_COMPILER_IS_GNUCXX)
    endif()
 
    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ENABLE_CXX11}")
+endif()
+
+if (CMAKE_COMPILER_IS_CLANG)
+ADD_DEFINITIONS("-std=c++0x")
 endif()
 
 #target_compile_features(BambooLib PUBLIC cxx_constexpr)
