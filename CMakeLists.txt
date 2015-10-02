@@ -19,7 +19,12 @@ target_include_directories (BambooLib PUBLIC include/)
 
 
 # Make sure we get C++11
-target_compile_features(BambooLib PUBLIC cxx_constexpr)
+if (MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -Wall")
+endif()
+#target_compile_features(BambooLib PUBLIC cxx_constexpr)
 
 SET_TARGET_PROPERTIES(BambooLib PROPERTIES DEBUG_POSTFIX "_d")
 
