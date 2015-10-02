@@ -26,8 +26,8 @@ if(CMAKE_COMPILER_IS_GNUCXX)
    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ENABLE_CXX11}")
 endif()
 
-if (CMAKE_COMPILER_IS_CLANG)
-   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -stdlib=libc++")
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1y -stdlib=libc++")
 endif()
 
 #target_compile_features(BambooLib PUBLIC cxx_constexpr)
