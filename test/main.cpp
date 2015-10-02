@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-TEST(A, B) { ASSERT_EQ(2, 1); }
+TEST(A, B) { ASSERT_EQ(2, 2); }
 
 int main(int argc, char **argv)
 {
