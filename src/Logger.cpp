@@ -113,11 +113,10 @@ void Logger::ConsoleLogWriter::Write(Logger::TLogLevel eLevel,
 {
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-		tm stTimeInfo;
-		localtime_s(&stTimeInfo, &lUnixTimestamp);
+		std::unique_ptr<tm> pTimeInfo(localtime(&lUnixTimestamp));
 
 		char szBuffer[80];
-		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
+		strftime(szBuffer, 80, "%H:%M:%S", pTimeInfo.get());
 
         if (eLevel >= Logger::ERROR)
             std::cerr << "(" << szBuffer << ", " << Logger::GetLevelString(eLevel) << ") " << szMessage << std::endl << std::flush;
@@ -143,11 +142,10 @@ void Logger::FileLogWriter::Write(Logger::TLogLevel eLevel, time_t lUnixTimestam
 
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-		tm stTimeInfo;
-		localtime_s(&stTimeInfo, &lUnixTimestamp);
+		std::unique_ptr<tm> pTimeInfo(localtime(&lUnixTimestamp));
 
 		char szBuffer[80];
-		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
+		strftime(szBuffer, 80, "%H:%M:%S", pTimeInfo.get());
 
         (*m_pFile) << "(" << szBuffer << ", " << Logger::GetLevelString(eLevel) << ") " << szMessage << std::endl;
     }
@@ -211,11 +209,10 @@ void Logger::HTMLLogWriter::Write(Logger::TLogLevel eLevel, time_t lUnixTimestam
 
     if (eLevel >= m_eIgnoreBelowLogLevel)
     {
-		tm stTimeInfo;
-		localtime_s(&stTimeInfo, &lUnixTimestamp);
+		std::unique_ptr<tm> pTimeInfo(localtime(&lUnixTimestamp));
 
-        char szBuffer[80];
-		strftime(szBuffer, 80, "%H:%M:%S", &stTimeInfo);
+		char szBuffer[80];
+		strftime(szBuffer, 80, "%H:%M:%S", pTimeInfo.get());
 
         const char *szLevel = Logger::GetLevelString(eLevel);
 
