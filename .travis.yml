@@ -29,4 +29,8 @@ addons:
 
 script:
   - make
-  - ctest
+  - if [ "$TESTS_ACTIVE" = "true" ]; then ctest; fi 
+    
+env:
+  - TESTS_ACTIVE=false
+  - TESTS_ACTIVE=true
