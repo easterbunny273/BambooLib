@@ -12,8 +12,10 @@ namespace BambooLib
 	{
 	public:
 		ScopeGuard(const T & func) : m_func(func), m_engaged(true) {};
-		~ScopeGuard() { if (m_engaged) m_func(); }
+		ScopeGuard(const ScopeGuard<T>&& other) : m_func(other.m_func), m_engaged(other.m_engaged) {};
 
+		~ScopeGuard() { if (m_engaged) m_func(); }
+		
 		ScopeGuard(const ScopeGuard<T>&) = delete;
 		ScopeGuard<T>& operator=(const ScopeGuard<T> &) = delete;
 
