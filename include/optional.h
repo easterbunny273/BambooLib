@@ -19,6 +19,9 @@ namespace BambooLib
 		optional(value_type && val) : m_pValue(new value_type(val)) {};
 		optional(const optional &rOther) : m_pValue(rOther.is_set() ? new value_type(*(rOther.m_pValue)) : nullptr) {};
 		optional(optional &&rOther) : m_pValue(rOther.m_pValue) { rOther.m_pValue = nullptr; };
+		
+		//template <typename... Args> optional(Args&&... args) : m_pValue(new T(std::forward<Args>(args)...)) {};
+
 		value_type& operator=(const value_type &rOther) { reset(); if (rOther.m_pValue != nullptr) m_pValue = new value_type(*(rOther.m_pValue)); };
 		value_type& operator=(value_type&& rOther) { reset(); m_pValue = rOther.m_pValue; };
 		~optional() { reset(); }
@@ -30,9 +33,9 @@ namespace BambooLib
 
 		value_type & get() { assert(is_set()); return *m_pValue; }
 		value_type & operator * () { return get(); };
+		value_type * operator -> () { return m_pValue; };
 
 		operator bool() const { return is_set(); };
-
 	private:
 		value_type * m_pValue;
 	};
@@ -47,6 +50,7 @@ namespace BambooLib
 		optional(const value_type & val) : m_value(val), m_isInitialized(true) {};
 		optional(value_type && val) : m_value(val), m_isInitialized(true) {};
 
+		void reset() { m_isInitialized = false; }
 		void set(const value_type & val) { m_value = val; m_isInitialized = true; }
 		bool is_set() const { return m_isInitialized; }
 
