@@ -27,7 +27,7 @@ namespace BambooLib
 		bufferStream << sourceVal;
 		bufferStream >> result;
 
-		if (bufferStream.fail())
+		if (bufferStream.fail() || bufferStream.eof()==false)
 			throw bad_lexical_cast();
 
 		return result;
@@ -54,7 +54,7 @@ namespace BambooLib
 		bufferStream << sourceVal;
 		bufferStream >> buffer;
 
-		if (!bufferStream.fail())
+		if (!bufferStream.fail() && bufferStream.eof())
 			result.set(buffer);
 
 		return result;
