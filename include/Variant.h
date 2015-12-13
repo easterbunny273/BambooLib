@@ -7,11 +7,12 @@
 #include <cassert>
 #include <memory>
 #include <typeinfo>
+#include <vector>
 
-namespace bamboo
+namespace BambooLib
 {
 
-	class variant
+	class Variant
 	{
 	public:
 		enum class EType
@@ -124,18 +125,18 @@ namespace bamboo
 		/*variant(const char * cstring) : m_type(EType::STRING), m_valueImpl(new TItlConcreteValue<std::string>(cstring)) {};
 		template <class T> variant(const T& value) : m_type(EType::UNKNOWN), m_valueImpl(new TItlConcreteValue<T>(value)) {};*/
 		
-		variant(bool value) : m_type(EType::BOOLEAN), m_valueImpl(new TItlConcreteValue<bool>(value)) {};
-		variant(double value) : m_type(EType::DOUBLE), m_valueImpl(new TItlConcreteValue<double>(value)) {};
-		variant(int value) : m_type(EType::INTEGER), m_valueImpl(new TItlConcreteValue<int>(value)) {};
-		variant(const std::string & value) : m_type(EType::STRING), m_valueImpl(new TItlConcreteValue<std::string>(value)) {};
-		variant(const char * cstring) : m_type(EType::STRING), m_valueImpl(new TItlConcreteValue<std::string>(cstring)) {};
-		variant(const std::vector<variant> & value) : m_type(EType::VARIANT_VECTOR), m_valueImpl(new TItlConcreteValue<std::vector<variant>>(value)) {};
+		Variant(bool value) : m_type(EType::BOOLEAN), m_valueImpl(new TItlConcreteValue<bool>(value)) {};
+		Variant(double value) : m_type(EType::DOUBLE), m_valueImpl(new TItlConcreteValue<double>(value)) {};
+		Variant(int value) : m_type(EType::INTEGER), m_valueImpl(new TItlConcreteValue<int>(value)) {};
+		Variant(const std::string & value) : m_type(EType::STRING), m_valueImpl(new TItlConcreteValue<std::string>(value)) {};
+		Variant(const char * cstring) : m_type(EType::STRING), m_valueImpl(new TItlConcreteValue<std::string>(cstring)) {};
+		Variant(const std::vector<Variant> & value) : m_type(EType::VARIANT_VECTOR), m_valueImpl(new TItlConcreteValue<std::vector<Variant>>(value)) {};
 
-		variant(const variant &other) : m_type(other.m_type), m_valueImpl(other.m_valueImpl->clone()) {};
-		variant(variant && other) : m_type(other.m_type), m_valueImpl(std::move(other.m_valueImpl)) {};
+		Variant(const Variant &other) : m_type(other.m_type), m_valueImpl(other.m_valueImpl->clone()) {};
+		Variant(Variant && other) : m_type(other.m_type), m_valueImpl(std::move(other.m_valueImpl)) {};
 
-		variant & operator=(const variant &other) { m_type = other.m_type; m_valueImpl = other.m_valueImpl->clone(); return *this; }
-		variant & operator=(variant &&other) { m_type = other.m_type; m_valueImpl = std::move(other.m_valueImpl); return *this; }
+		Variant & operator=(const Variant &other) { m_type = other.m_type; m_valueImpl = other.m_valueImpl->clone(); return *this; }
+		Variant & operator=(Variant &&other) { m_type = other.m_type; m_valueImpl = std::move(other.m_valueImpl); return *this; }
 
 		template <class T> const T& get() const { return m_valueImpl->get<T>(); }
 		template <class T> T& get() { return m_valueImpl->get<T>(); }
@@ -145,7 +146,7 @@ namespace bamboo
 
 		template <class T> bool set(const T& value) { return m_valueImpl->set<T>(value); }
 
-		bool operator==(const variant &other) const
+		bool operator==(const Variant &other) const
 		{
 			return (m_type == other.m_type && (*m_valueImpl == *other.m_valueImpl));
 		}

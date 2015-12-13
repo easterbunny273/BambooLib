@@ -1,18 +1,18 @@
 #include <gtest/gtest.h>
 #include "Variant.h"
 
+using BambooLib::Variant;
+
 TEST(Variant, GetInt_Direct)
 {
-	using bamboo::variant;
-	variant test(42);
+	Variant test(42);
 
 	EXPECT_EQ(test.get<int>(), 42);
 }
 
 TEST(Variant, GetInt_Ref)
 {
-	using bamboo::variant;
-	variant test(42);
+	Variant test(42);
 
 	int value;
 	bool ok = test.get<int>(value);
@@ -22,8 +22,7 @@ TEST(Variant, GetInt_Ref)
 
 TEST(Variant, ModifyInt)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
 	test.set<int>(42);
 	EXPECT_EQ(test.get<int>(), 42);
@@ -31,8 +30,7 @@ TEST(Variant, ModifyInt)
 
 TEST(Variant, ModifyString)
 {
-	using bamboo::variant;
-	variant test("hallo");
+	Variant test("hallo");
 
 	EXPECT_EQ(test.get<std::string>(), "hallo");
 	
@@ -43,16 +41,14 @@ TEST(Variant, ModifyString)
 
 TEST(Variant, GetWrongType_Direct)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
 	EXPECT_THROW(test.get<bool>(), std::exception);
 }
 
 TEST(Variant, GetWrongType_Ref)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
 	bool value;
 	bool correctType = test.get<bool>(value);
@@ -61,10 +57,9 @@ TEST(Variant, GetWrongType_Ref)
 
 TEST(Variant, InitializeConstVector)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
-	const std::vector<variant> testVector = { variant(2), variant(42.0), variant("hallo") };
+	const std::vector<Variant> testVector = { Variant(2), Variant(42.0), Variant("hallo") };
 
 	EXPECT_EQ(testVector[0].get<int>(), 2);
 	EXPECT_EQ(testVector[1].get<double>(), 42.0);
@@ -73,10 +68,9 @@ TEST(Variant, InitializeConstVector)
 
 TEST(Variant, InitializeVector)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
-	std::vector<variant> testVector = { variant(2), variant(42.0), variant("hallo") };
+	std::vector<Variant> testVector = { Variant(2), Variant(42.0), Variant("hallo") };
 
 	EXPECT_EQ(testVector[0].get<int>(), 2);
 	EXPECT_EQ(testVector[1].get<double>(), 42.0);
@@ -85,12 +79,11 @@ TEST(Variant, InitializeVector)
 
 TEST(Variant, TypeVector)
 {
-	using bamboo::variant;
-	variant test(1337);
+	Variant test(1337);
 
-	std::vector<variant> testVector = { variant(2), variant(42.0), variant("hallo") };
+	std::vector<Variant> testVector = { Variant(2), Variant(42.0), Variant("hallo") };
 
-	variant holdingVariant(testVector);
+	Variant holdingVariant(testVector);
 
-	EXPECT_EQ(holdingVariant.get<std::vector<variant>>(), testVector);
+	EXPECT_EQ(holdingVariant.get<std::vector<Variant>>(), testVector);
 }
